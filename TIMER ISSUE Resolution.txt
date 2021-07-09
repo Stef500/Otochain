@@ -1,0 +1,6 @@
+Changer la ligne :
+const MAX_TIMER_DURATION_MS = 60 * 1000;
+par :
+const MAX_TIMER_DURATION_MS = 10000 * 1000;
+Dans le fichier :
+node_modules/react-native/Libraries/Core/Timers/JSTimers.js

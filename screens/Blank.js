@@ -16,7 +16,7 @@ const RegisterScreen = () =>{
     );
 
 };
-export default RegisterScreen();
+export default RegisterScreen;
 const styles = StyleSheet.create({
 
 
