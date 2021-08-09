@@ -55,7 +55,8 @@ const HomeScreen = ({navigation}) => {
                         marginRight: 20,
                     }}
                 >
-                    <TouchableOpacity activeOpacity={0.5}>
+                    <TouchableOpacity onPress ={() => navigation.navigate("CameraScreen")}
+                                      activeOpacity={0.5}>
                         <AntDesign name="camerao" size={24} color="black"/>
                     </TouchableOpacity>
                     <TouchableOpacity
