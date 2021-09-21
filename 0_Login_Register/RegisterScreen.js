@@ -8,11 +8,40 @@ import {Button, Input, Text} from "react-native-elements";
 import {auth} from "../firebase";
 
 const RegisterScreen = ({navigation}) => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
+    //NB: j'ai ici viré les utilisations abusives du states ci-dessous (Les 4 fonctions plus bas sont à reunir en une seule fonction):
+    //const [name, setName] = useState('');
+    //const [email, setEmail] = useState('');
+    //const [password, setPassword] = useState('');
+    //const [imageUrl, setImageUrl] = useState('');
 
+    let name;
+    let email;
+    let password;
+    let imageUrl;
+
+
+
+
+    const _onChangeName=(nameText)=>{
+        name = nameText;
+        console.log (name);
+
+    }
+
+    const _onChangeEmail=(emailText)=>{
+        email = emailText;
+        console.log (email);
+    }
+
+    const _onChangePassword=(passwordText)=>{
+        password = passwordText;
+        console.log (password);
+    }
+
+    const _onChangeImageURL=(imageURLText)=>{
+        imageUrl = imageURLText;
+        console.log (imageURLText);
+    }
     useLayoutEffect(() => {
         navigation.setOptions({
             headerBackTitle: "Back to Login",
@@ -36,15 +65,15 @@ const RegisterScreen = ({navigation}) => {
         <KeyboardAvoidingView behavior="padding" enabled style={styles.container}>
             <StatusBar style="light"/>
             <Text h3 style={{marginBottom: 50}}>Register on OTOCHAIN</Text>
-            <View style={styles.inputContainer}>
-                <Input placeholder="Full name" autoFocus type='text' value={name}
-                       onChangeText={(text) => setName(text)}/>
-                <Input placeholder="Email" type='email' value={email} onChangeText={(text) => setEmail(text)}/>
-                <Input placeholder="Password" type='password' secureTextEntry value={password}
-                       onChangeText={(text) => setPassword(text)}/>
+            <View style={styles.inputAllContainer}>
+                <Input style={styles.inputOneContainer} placeholder="Full name" autoFocus={true} type='text' value={name}
+                       onChangeText={(text) => _onChangeName(text)}/>
+                <Input style={styles.inputOneContainer} placeholder="Email" type='email' value={email} onChangeText={(text) => _onChangeEmail(text)}/>
+                <Input style={styles.inputOneContainer} placeholder="Password" type='password' secureTextEntry value={password}
+                       onChangeText={(text) => _onChangePassword(text)}/>
 
-                <Input placeholder="Profile Picture URL (optional)" type='text' value={imageUrl}
-                       onChangeText={(text )=> setImageUrl(text)}
+                <Input style={styles.inputOneContainer} placeholder="Profile Picture URL (optional)" type='text' value={imageUrl}
+                       onChangeText={(text )=> _onChangeImageURL(text)}
                        onSubmitEditing={register}/>
             </View>
             <Button containerStyle={styles.button}
@@ -63,9 +92,14 @@ const styles = StyleSheet.create({
         padding: 10,
         backgroundColor: "white",
     },
-    inputContainer: {
+    inputAllContainer: {
+        flex: 1,
+        marginTop:100,
         width: 300, //la largeur des cases d'input
 
+    },
+    inputOneContainer:{
+        flex:1,
     },
     button: {
         width: 200, //largeur des bouttons

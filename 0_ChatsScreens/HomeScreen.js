@@ -6,15 +6,15 @@ import {ScrollView} from "react-native";
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {Avatar} from "react-native-elements";
 import {AntDesign, SimpleLineIcons} from "@expo/vector-icons";
+import {doc} from "firebase/firestore";
 
-import CustomListItem from "../components/CustomListItem";
-import {auth, db} from "../firebase";
+import CustomListItem from "../0_components/CustomListItem";
+import {auth, db, getDocs} from "../firebase";
+import async from "async";
 
-const signIn = () => {
-
-}
 const HomeScreen = ({navigation}) => {
-    const [chats,setChats]= useState([]);
+
+    const [chats, setChats] = useState([]);
 
     const signOutUser = () => {
         auth.signOut().then(() => {
@@ -22,18 +22,26 @@ const HomeScreen = ({navigation}) => {
         });
     };
 
+
     useEffect(() => {
-    const unsubscribe = db.collection('chats').onSnapshot(snapshot => (
-        setChats(snapshot.docs.map(doc =>({
-            id: doc.id,
-            data:doc.data()
-        })))
-    ))
-        return unsubscribe;
-        }, [])
+
+        async function getChats() {
+            console.log("Loading snapShots on firebase");
+           await db.collection('chats').limit(10).get().then(
+          snapshot => (
+                setChats(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    data: doc.data()
+                }))))
+            )
+        }
+  getChats();
+    }, [])
 
 
     useLayoutEffect(() => {
+
+        console.log(chats);
         navigation.setOptions({
             title: "Otochain",
             headerStyle: {backgroundColor: "#fff"},
@@ -55,12 +63,12 @@ const HomeScreen = ({navigation}) => {
                         marginRight: 20,
                     }}
                 >
-                    <TouchableOpacity onPress ={() => navigation.navigate("CameraScreen")}
+                    <TouchableOpacity onPress={() => navigation.navigate("CameraScreen")}
                                       activeOpacity={0.5}>
                         <AntDesign name="camerao" size={24} color="black"/>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress ={() => navigation.navigate("AddChat")}
+                        onPress={() => navigation.navigate("AddChat")}
                         activeOpacity={0.5}>
                         <SimpleLineIcons name="pencil" size={24} color="black"/>
                     </TouchableOpacity>
@@ -70,19 +78,21 @@ const HomeScreen = ({navigation}) => {
         });
     }, [navigation]);
 
-    const enterChat=(id,chatName) =>{
-        navigation.navigate("Chat",{
-            id:id,
+    const enterChat = (id, chatName) => {
+        navigation.navigate("Chat", {
+            id: id,
             chatName: chatName,
         });
     };
     return (//KeyboardAvoidingView : comportement du clavier
+
         <SafeAreaView>
+
             <ScrollView style={styles.container}>
                 {
-                    chats.map(({id,data: {chatName}}) =>(
-                        <CustomListItem  key = {id} id ={id} chatName={chatName}
-                        enterChat={enterChat}/>
+                    chats.map(({id, data: {chatName}}) => (
+                        <CustomListItem key={id} id={id} chatName={chatName}
+                                        enterChat={enterChat}/>
                     ))
                 }
 
@@ -94,6 +104,6 @@ const HomeScreen = ({navigation}) => {
 export default HomeScreen;
 const styles = StyleSheet.create({
     container: {
-        height:'100%'
+        height: '100%'
     }
 });

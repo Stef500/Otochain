@@ -14,14 +14,22 @@ const firebaseConfig = {
     measurementId: "G-C16C1JZSNY"
 };
 
-let app; //apps ??
-if (firebase.apps.length === 0){
-    app = firebase.initializeApp(firebaseConfig);
-} else {
-    app = firebase.app();
-}
+let app;
+
+    if (
+    firebase.apps.length === 0
+)
+    {
+        app = firebase.initializeApp(firebaseConfig); //si il n'y a pas d'app firebase , en initialiser une
+        firebase.firestore().settings({experimentalForceLongPolling: true});
+    }
+else
+    {
+        //sinon recupérer celle existante:
+        app = firebase.app();
+    }
 
 const db = app.firestore();
 const auth = firebase.auth();
 
-export {db, auth};
+export {db, auth};//exportation des différentes données de la Database.

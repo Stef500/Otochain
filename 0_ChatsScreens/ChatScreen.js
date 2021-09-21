@@ -1,4 +1,4 @@
-import React, {useLayoutEffect} from 'react';
+import React, {useEffect, useLayoutEffect} from 'react';
 import {useState} from "react";
 import {ScrollView, StatusBar, StyleSheet, Text, TextInput, View,} from 'react-native';
 import {Avatar} from "react-native-elements";
@@ -16,9 +16,26 @@ import {db, auth} from "../firebase";
 
 
 const ChatScreen = ({navigation, route}) => {
-    const [input, setInput] = useState("");
+
+    //NB: j'ai ici viré les utilisations abusives du states ci-dessous,
+    //const [input, setInput] = useState("");
     const [messages, setMessages] = useState([])
+    let input;
+    //let messages = [];
+    console.log("rendu de la page.");
+    const _onChangeInput = (inputText) => {
+        input = inputText;
+    }
+/*
+    const _onChangeMessages = (messagesText) => {
+        messages= [messagesText,...messages];
+    }*/
+    const _resetInput = () =>{
+        input ="";
+    }
+
     useLayoutEffect(() => {
+    console.log("Chargement de l'en tete de navigation");
         navigation.setOptions({
             title: "Chat",
             headerBackTitleVisible: false,
@@ -26,7 +43,7 @@ const ChatScreen = ({navigation, route}) => {
             headerTitle: () => (
                 <View
                     style={{
-                        felxDirection: "row",
+                        flexDirection: "row",
                         alignItems: "center",
                     }}
                 >
@@ -58,7 +75,7 @@ const ChatScreen = ({navigation, route}) => {
                     }
                     }
                 >
-                    <TouchableOpacity onPress ={() => navigation.navigate("CameraScreen")}>
+                    <TouchableOpacity onPress={() => navigation.navigate("CameraScreen")}>
                         <FontAwesome name="video-camera" size={24} color="white"/>
                     </TouchableOpacity>
                     <TouchableOpacity>
@@ -68,9 +85,10 @@ const ChatScreen = ({navigation, route}) => {
             )
 
         });
-    }, [navigation ,messages]);
+    }, [navigation, messages]);
 
     const sendMessage = () => {
+    console.log("Chargement de l'envoi de messages");
         Keyboard.dismiss()
         db.collection('chats').doc(route.params.id).collection('messages').add({
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
@@ -80,15 +98,20 @@ const ChatScreen = ({navigation, route}) => {
             photoURL: auth.currentUser.photoURL
 
         })
-        setInput('')
+        _resetInput()
+        setMessages(messages);
     };
+
     useLayoutEffect(() => {
-        const unsubscribe = db
-            .collection('chats')
+
+
+    async function getmessages() {
+        console.log("Chargement des messages dependants du route");
+        db.collection('chats')
             .doc(route.params.id)
             .collection('messages')
-            .orderBy('timestamp', 'desc')
-            .onSnapshot((snapshot) => setMessages(
+            .orderBy('timestamp', 'desc').limit(3)
+            .get().then((snapshot) => setMessages(
                 snapshot.docs.map(doc =>
                     ({
                         id: doc.id,
@@ -96,7 +119,10 @@ const ChatScreen = ({navigation, route}) => {
 
                     }))
             ));
-        return unsubscribe;
+
+    }
+
+      getmessages();
     }, [route])
 
     return (//KeyboardAvoidingView : comportement du clavier
@@ -111,7 +137,7 @@ const ChatScreen = ({navigation, route}) => {
                     <>
                         <ScrollView contentContainerStyle={{
                             paddingTop: 15
-                            }
+                        }
                         }>
                             {messages.map(({id, data}) => (
                                 data.email === auth.currentUser.email ? (
@@ -119,9 +145,9 @@ const ChatScreen = ({navigation, route}) => {
                                         <Avatar
                                             containerStyle={{
                                                 position: "absolute",
-                                                bottom: - 15
-                                            ,
-                                                right:-5,
+                                                bottom: -15
+                                                ,
+                                                right: -5,
                                             }}
                                             position="absolute"
                                             bottom={-15}
@@ -139,15 +165,15 @@ const ChatScreen = ({navigation, route}) => {
                                     </View>
                                 ) : (
                                     <View style={styles.sender}>
-                                        <Avatar        containerStyle={{
+                                        <Avatar containerStyle={{
                                             position: "absolute",
-                                            bottom: - 15,
-                                            right:-5,
+                                            bottom: -15,
+                                            right: -5,
                                         }}
-                                                       position="absolute"
-                                                       bottom={-15}
-                                                       right={-5}
-                                                       rounded size={30} source={{
+                                                position="absolute"
+                                                bottom={-15}
+                                                right={-5}
+                                                rounded size={30} source={{
                                             uri: data.photoURL,
                                         }}/>
                                         <Text style={styles.senderText}>
@@ -165,7 +191,7 @@ const ChatScreen = ({navigation, route}) => {
                         <View style={styles.footer}>
                             <TextInput
                                 value={input}
-                                onChangeText={text => setInput(text)}
+                                onChangeText={text => _onChangeInput(text)}
                                 onSubmitEditing={sendMessage}
                                 placeholder="Otochain chat message"
                                 style={styles.textInput}/>
@@ -208,27 +234,24 @@ const styles = StyleSheet.create({
         padding: 15,
 
     },
-    senderName:{
-        left:10,
-        paddingRight:10,
-        fontSize:10,
-        color:"white",
+    senderName: {
+        left: 10,
+        paddingRight: 10,
+        fontSize: 10,
+        color: "white",
     },
-    senderText:{
-        color:"white",
-        fontWeight:"500",
-        marginLeft:10,
-        marginBottom:15,
-
+    senderText: {
+        color: "white",
+        fontWeight: "500",
+        marginLeft: 10,
+        marginBottom: 15,
 
 
     },
-    recieverText:{
-        color:"black",
-        fontWeight:"500",
-        marginLeft:10,
-
-
+    recieverText: {
+        color: "black",
+        fontWeight: "500",
+        marginLeft: 10,
 
 
     },

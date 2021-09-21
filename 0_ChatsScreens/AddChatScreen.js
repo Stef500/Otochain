@@ -8,7 +8,14 @@ import {auth, db} from "../firebase";
 
 
 const AddChatScreen = ({navigation}) => {
-    const [input, setInput] = useState("");
+    //NB: j'ai ici viré les utilisations abusives du states ci-dessous,
+    // const [input, setInput] = useState("");
+
+    let input;
+    const _onChangeInput = (inputText) => {
+        input = inputText;
+    }
+
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -17,7 +24,7 @@ const AddChatScreen = ({navigation}) => {
         })
     }, [navigation]);
 
-    const createChat = async () => {
+    const createChat = async () => {//ajout d'un chats dans les collecctions de firebase (fonctionnel)
         await db.collection('chats').add({
             chatName: input,
         }).then(() => {
@@ -29,7 +36,7 @@ const AddChatScreen = ({navigation}) => {
         <View styles={styles.container}>
             <Input placeholder={"Enter a chat name"}
                    value={input}
-                   onChangeText={(text) => setInput(text)}
+                   onChangeText={(text) => _onChangeInput(text)}
                    onSubmitEditing={createChat}
                    leftIcon={
                        <Icon name="wechat" type="antdesign" size={24} color="black"/>
@@ -42,8 +49,8 @@ const AddChatScreen = ({navigation}) => {
 export default AddChatScreen;
 const styles = StyleSheet.create({
     container: {
-        backgroundColor:"white",
-        padding :30,
-        height:"100%",
+        backgroundColor: "white",
+        padding: 30,
+        height: "100%",
     },
 });

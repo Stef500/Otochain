@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from 'react-native';
 const signIn = () =>{
 
 }
-const RegisterScreen = () =>{
+const blankScreen = () =>{
     const [email,setEmail]=useState("");
     const[password,setPassword]=useState("");
 

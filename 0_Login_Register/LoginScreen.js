@@ -7,13 +7,24 @@ import {KeyboardAvoidingView} from "react-native";
 import {auth} from "../firebase"
 
 const LoginScreen = ({navigation}) =>{
-    const [email,setEmail]=useState("");
-    const[password,setPassword]=useState("");
+    //NB: j'ai ici viré les utilisations abusives du states ci-dessous.
+    //const [email,setEmail]=useState("");
+    //const[password,setPassword]=useState("");
+    let email;
+    let password;
+
 
     const signIn = () =>{
         auth.signInWithEmailAndPassword(email,password).catch((error) => alert(error));
     };
 
+    const _onChangeEmail=(emailText)=>{
+    email = emailText;
+    }
+
+    const _onChangePassword=(passwordText)=>{
+        password = passwordText;
+    }
     useEffect(() =>{
         const unsubscribe =auth.onAuthStateChanged((authUser) =>{
             if(authUser){
@@ -29,8 +40,8 @@ return unsubscribe;
             <Image source={require('../images/logo.png',)}
             style ={{width:200,height:200}}/>
             <View style={styles.inputContainer}>
-                <Input placeholder="Email" autoFocus type="email" value={email} onChangeText={(text)=>setEmail(text)}/>
-                <Input placeholder="Password" secureTextEntry type="password" value={password} onChangeText={(text)=>setPassword(text)}
+                <Input placeholder="Email" autoFocus type="email" value={email} onChangeText={(emailText)=>_onChangeEmail(emailText)}/>
+                <Input placeholder="Password" secureTextEntry type="password" value={password} onChangeText={(passwordText)=>_onChangePassword(passwordText)}
                 onSubmitEditing={signIn}/>
                 </View>
 
@@ -50,6 +61,7 @@ container:{
     padding:10,
 },
     inputContainer:{
+        marginTop:50,
     width:300, //la largeur des cases d'input
 
     },
