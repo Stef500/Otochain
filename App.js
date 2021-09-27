@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {AntDesign,Entypo, FontAwesome, Ionicons} from "@expo/vector-icons";
 import StackNavigator from "@react-navigation/stack/src/navigators/createStackNavigator";
 import LoginScreen from "./0_Login_Register/LoginScreen";
+import KeyboardAvoidingComponent from "./0_Login_Register/stackoverflowquestion";
 import RegisterScreen from "./0_Login_Register/RegisterScreen";
 import HomeScreen from "./0_ChatsScreens/HomeScreen";
 import AddChatScreen from "./0_ChatsScreens/AddChatScreen";

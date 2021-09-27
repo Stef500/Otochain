@@ -11,6 +11,8 @@ class FilmItem extends React.Component {
         let deviceWidth = Dimensions.get('window').width
         const item = this.props.data;
         const videoTitle= item.snippet.title;
+        console.log("Render d'un 'film item':")
+        console.log("largeur de l'appareil:")
         console.log(deviceWidth);
         let urlImage ='';
         if (deviceWidth<800){
@@ -22,7 +24,6 @@ class FilmItem extends React.Component {
             urlImage = item.snippet.thumbnails.medium.url;
         }
 
-        console.log(deviceWidth);
 
         {/*il y a différentes images possibles sur youtube pour une vidéo:
         const urlImage = item.snippet.thumbnails.default.url;
@@ -36,7 +37,6 @@ class FilmItem extends React.Component {
         */}
         const videoDate = item.contentDetails.videoPublishedAt;
         const videoDescription = item.snippet.description;
-        console.log(item);
         return (
             <View style={styles.main_container}>{/*flexDirection: 'row' agencement horizontal*/}
                 <Image

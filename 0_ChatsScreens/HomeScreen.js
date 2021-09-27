@@ -35,7 +35,7 @@ const HomeScreen = ({navigation}) => {
                 }))))
             )
         }
-  getChats();
+        getChats();
     }, [])
 
 
