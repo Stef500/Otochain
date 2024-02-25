@@ -1,2 +1,2 @@
 # Otochain
-Projet humanitaire IED
+Projet humanitaire
